@@ -1,0 +1,18 @@
+<.header>
+  Visits for shortened URLs
+</.header>
+
+<.table id="urls" rows={@urls}>
+  <:col :let={url} label="ID"><%= url.id %></:col>
+  <:col :let={url} label="Short">
+    <.external href={url(@conn, ~p"/#{url.short}")} />
+  </:col>
+  <:col :let={url} label="Destination URL">
+    <.external href={url.original_raw} />
+  </:col>
+  <:col :let={url} label="Visits">
+    <%= url.visits %>
+  </:col>
+</.table>
+
+<.back navigate={~p"/urls/new"}>Back to shorten a new URL</.back>

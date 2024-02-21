@@ -11,4 +11,11 @@ defmodule UrlShortner.Factory do
       short: Faker.Internet.slug()
     }
   end
+
+  def url_visit_factory do
+    %UrlShortner.UrlVisit{
+      url: build(:url),
+      info: %{}
+    }
+  end
 end

@@ -572,6 +572,30 @@ defmodule UrlShortnerWeb.CoreComponents do
   end
 
   @doc """
+  Renders an external link.
+
+  ## Examples
+
+      <.external href={~p"/posts"} />
+  """
+  attr :href, :any, required: true
+
+  def external(assigns) do
+    ~H"""
+    <div class="mt-16">
+      <.link
+        href={@href}
+        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        target="_blank"
+      >
+        <.icon name="hero-arrow-top-right-on-square" class="h-3 w-3" />
+        <%= @href %>
+      </.link>
+    </div>
+    """
+  end
+
+  @doc """
   Renders a [Heroicon](https://heroicons.com).
 
   Heroicons come in three styles – outline, solid, and mini.

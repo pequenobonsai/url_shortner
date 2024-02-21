@@ -19,6 +19,7 @@ defmodule UrlShortnerWeb.Router do
 
     get "/", PageController, :home
     resources "/urls", UrlController, only: [:new, :create, :show]
+    resources "/stats", StatsController, only: [:index]
     get "/:short", UrlController, :route
   end
 

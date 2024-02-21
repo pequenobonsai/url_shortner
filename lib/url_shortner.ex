@@ -28,4 +28,17 @@ defmodule UrlShortner do
     |> UrlVisit.changeset(%{url_id: url.id, info: %{}})
     |> Repo.insert()
   end
+
+  @spec urls_with_visit :: [Url.t()]
+  def urls_with_visit do
+    query =
+      from u in Url,
+        left_join: uv in UrlVisit,
+        on: u.id == uv.url_id,
+        group_by: u.id,
+        order_by: [desc: count(uv.id)],
+        select: %{u | visits: count(uv.id)}
+
+    Repo.all(query)
+  end
 end

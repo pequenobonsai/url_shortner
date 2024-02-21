@@ -87,4 +87,32 @@ defmodule UrlShortnerTest do
     url = insert(:url)
     assert %Ecto.Changeset{} = UrlShortner.change_url(url)
   end
+
+  describe "urls_with_visit/0" do
+    test "returns urls with visit count from counting UrlVisits" do
+      %{id: url_id} = url = insert(:url)
+      %{id: url2_id} = url2 = insert(:url)
+
+      insert_list(10, :url_visit, url: url)
+      insert_list(5, :url_visit, url: url2)
+
+      assert [%Url{id: ^url_id, visits: 10}, %Url{id: ^url2_id, visits: 5}] =
+               UrlShortner.urls_with_visit()
+    end
+
+    test "returns 0 for urls with no visit count" do
+      %{id: url_id} = url = insert(:url)
+      %{id: url2_id} = url2 = insert(:url)
+      %{id: url3_id} = insert(:url)
+
+      insert_list(10, :url_visit, url: url)
+      insert_list(5, :url_visit, url: url2)
+
+      assert [
+               %Url{id: ^url_id, visits: 10},
+               %Url{id: ^url2_id, visits: 5},
+               %Url{id: ^url3_id, visits: 0}
+             ] = UrlShortner.urls_with_visit()
+    end
+  end
 end

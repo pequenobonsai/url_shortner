@@ -14,6 +14,7 @@ defmodule UrlShortner.Url do
   schema "urls" do
     field :short, :string
     field :original_raw, :string
+    field :visits, :integer, virtual: true
 
     embeds_one :original, Original, primary_key: false, on_replace: :update do
       @type t :: %{
