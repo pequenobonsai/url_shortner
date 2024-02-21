@@ -56,14 +56,11 @@ defmodule UrlShortner.Url do
 
   @doc false
   def changeset(url, attrs) do
-    # TODO: make something more robust later on and use base36
-    short = :rand.bytes(4) |> Base.encode32(padding: false)
-
     url
     |> cast(attrs, [:original_raw])
     |> validate_required([:original_raw])
     |> parse_original_raw_into_original()
-    |> put_change(:short, short)
+    |> put_change(:short, key_generator().generate())
   end
 
   defp parse_original_raw_into_original(changeset = %{valid?: false}), do: changeset
@@ -76,5 +73,9 @@ defmodule UrlShortner.Url do
     else
       add_error(changeset, :original_raw, "Invalid URL")
     end
+  end
+
+  defp key_generator do
+    Application.get_env(:url_shortner, :key_generator)
   end
 end
