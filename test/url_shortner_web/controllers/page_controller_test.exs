@@ -3,6 +3,9 @@ defmodule UrlShortnerWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ "Peace of mind from prototype to production"
+    html = conn |> html_response(200) |> Floki.text()
+
+    assert html =~ "Shorten new url"
+    assert html =~ "Stats"
   end
 end
