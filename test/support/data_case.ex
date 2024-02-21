@@ -24,6 +24,7 @@ defmodule UrlShortner.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import UrlShortner.DataCase
+      import UrlShortner.Factory
     end
   end
 

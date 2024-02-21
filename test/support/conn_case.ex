@@ -28,6 +28,7 @@ defmodule UrlShortnerWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import UrlShortnerWeb.ConnCase
+      import UrlShortner.Factory
     end
   end
 
