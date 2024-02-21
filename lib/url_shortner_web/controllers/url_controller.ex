@@ -1,6 +1,5 @@
 defmodule UrlShortnerWeb.UrlController do
   use UrlShortnerWeb, :controller
-
   alias UrlShortner.Url
 
   def new(conn, _params) do
@@ -23,5 +22,17 @@ defmodule UrlShortnerWeb.UrlController do
   def show(conn, %{"id" => id}) do
     url = UrlShortner.get_url!(id)
     render(conn, :show, url: url)
+  end
+
+  def route(conn, %{"short" => short}) do
+    url = UrlShortner.get_url_by(short: short)
+
+    if url do
+      redirect(conn, external: url.original_raw)
+    else
+      conn
+      |> put_flash(:error, "URL not found")
+      |> redirect(to: ~p"/urls/new")
+    end
   end
 end

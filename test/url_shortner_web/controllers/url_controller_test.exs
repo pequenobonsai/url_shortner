@@ -49,4 +49,15 @@ defmodule UrlShortnerWeb.UrlControllerTest do
       assert Floki.text(html) =~ "had an error generating short url, try again"
     end
   end
+
+  describe "route url" do
+    test "routes to the original url if exists", %{conn: conn} do
+      url = insert(:url)
+      assert conn |> get(~p"/#{url.short}") |> redirected_to(302) == url.original_raw
+    end
+
+    test "routes to shorten new url url if it does not exists", %{conn: conn} do
+      assert conn |> get(~p"/someshort") |> redirected_to(302) == ~p"/urls/new"
+    end
+  end
 end

@@ -6,6 +6,9 @@ defmodule UrlShortner do
   @spec get_url!(String.t()) :: Url.t()
   def get_url!(id), do: Repo.get!(Url, id)
 
+  @spec get_url_by(%{by: String.t()}) :: Url.t() | nil
+  def get_url_by(by), do: Repo.get_by(Url, by)
+
   @spec create_url(%{}) :: {:ok, Url.t()} | {:error, Ecto.Changeset.t()}
   def create_url(attrs \\ %{}) do
     %Url{}
