@@ -1,5 +1,5 @@
 defmodule UrlShortnerWeb.UrlControllerTest do
-  use UrlShortnerWeb.ConnCase
+  use UrlShortnerWeb.ConnCase, async: true
 
   describe "new url" do
     test "renders form", %{conn: conn} do

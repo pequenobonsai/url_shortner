@@ -1,5 +1,5 @@
 defmodule UrlShortnerTest do
-  use UrlShortner.DataCase
+  use UrlShortner.DataCase, async: true
   alias UrlShortner.Url
 
   test "get_url!/1 returns the url with given id" do
