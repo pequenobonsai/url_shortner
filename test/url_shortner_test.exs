@@ -1,6 +1,9 @@
 defmodule UrlShortnerTest do
   use UrlShortner.DataCase, async: true
+  import Mox
   alias UrlShortner.Url
+
+  setup :verify_on_exit!
 
   test "get_url!/1 returns the url with given id" do
     url = insert(:url)
@@ -64,6 +67,19 @@ defmodule UrlShortnerTest do
                UrlShortner.create_url(%{original_raw: "://domain"})
 
       assert [original_raw: {"Invalid URL", _}] = errors
+    end
+
+    test "when trying to use an existing short url it returns an error" do
+      existing_url = insert(:url)
+      valid_attrs = %{original_raw: "https://example.org"}
+
+      expect(KeyGeneratorMock, :generate, fn -> existing_url.short end)
+
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               UrlShortner.create_url(valid_attrs)
+
+      assert [original_raw: {"had an error generating short url, try again", _}] =
+               errors
     end
   end
 

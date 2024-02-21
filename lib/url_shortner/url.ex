@@ -61,6 +61,10 @@ defmodule UrlShortner.Url do
     |> validate_required([:original_raw])
     |> parse_original_raw_into_original()
     |> put_change(:short, key_generator().generate())
+    |> unique_constraint(:original_raw,
+      name: :urls_short_index,
+      message: "had an error generating short url, try again"
+    )
   end
 
   defp parse_original_raw_into_original(changeset = %{valid?: false}), do: changeset
