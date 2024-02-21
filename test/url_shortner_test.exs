@@ -28,7 +28,42 @@ defmodule UrlShortnerTest do
     end
 
     test "with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = UrlShortner.create_url(%{original_raw: nil})
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               UrlShortner.create_url(%{original_raw: nil})
+
+      assert [original_raw: {"can't be blank", _}] = errors
+    end
+
+    test "with an invalid URL it returns an error" do
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               UrlShortner.create_url(%{original_raw: ""})
+
+      assert [original_raw: {"can't be blank", _}] = errors
+
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               UrlShortner.create_url(%{original_raw: "htt"})
+
+      assert [original_raw: {"Invalid URL", _}] = errors
+
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               UrlShortner.create_url(%{original_raw: "https//"})
+
+      assert [original_raw: {"Invalid URL", _}] = errors
+
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               UrlShortner.create_url(%{original_raw: "https://"})
+
+      assert [original_raw: {"Invalid URL", _}] = errors
+
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               UrlShortner.create_url(%{original_raw: "https//domain"})
+
+      assert [original_raw: {"Invalid URL", _}] = errors
+
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               UrlShortner.create_url(%{original_raw: "://domain"})
+
+      assert [original_raw: {"Invalid URL", _}] = errors
     end
   end
 

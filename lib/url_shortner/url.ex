@@ -41,6 +41,14 @@ defmodule UrlShortner.Url do
         |> Map.from_struct()
         |> Map.take(__MODULE__.__schema__(:fields))
       end
+
+      @spec valid?(t()) :: boolean()
+      def valid?(url) do
+        url
+        |> Map.take([:scheme, :host, :port])
+        |> Map.values()
+        |> Enum.all?(&(&1 != nil && &1 != ""))
+      end
     end
 
     timestamps(type: :utc_datetime)
@@ -51,20 +59,22 @@ defmodule UrlShortner.Url do
     # TODO: make something more robust later on and use base36
     short = :rand.bytes(4) |> Base.encode32(padding: false)
 
-    changeset =
-      url
-      |> cast(attrs, [:original_raw])
-      |> validate_required([:original_raw])
-
-    changeset =
-      if changeset.valid? do
-        original = changeset |> get_field(:original_raw) |> Original.from_url()
-        put_change(changeset, :original, original)
-      else
-        changeset
-      end
-
-    changeset
+    url
+    |> cast(attrs, [:original_raw])
+    |> validate_required([:original_raw])
+    |> parse_original_raw_into_original()
     |> put_change(:short, short)
+  end
+
+  defp parse_original_raw_into_original(changeset = %{valid?: false}), do: changeset
+
+  defp parse_original_raw_into_original(changeset = %{valid?: true}) do
+    original = changeset |> get_field(:original_raw) |> Original.from_url()
+
+    if Original.valid?(original) do
+      put_change(changeset, :original, original)
+    else
+      add_error(changeset, :original_raw, "Invalid URL")
+    end
   end
 end
