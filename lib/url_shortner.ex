@@ -51,4 +51,16 @@ defmodule UrlShortner do
 
     Repo.all(query)
   end
+
+  @spec filter_non_existent([%{short: String.t()}]) :: [String.t()]
+  def filter_non_existent(shorts) do
+    query =
+      from gs in values(shorts, %{short: :string}),
+        left_join: u in Url,
+        on: u.short == gs.short,
+        where: is_nil(u.id),
+        select: gs.short
+
+    Repo.all(query)
+  end
 end

@@ -15,6 +15,9 @@ defmodule UrlShortner.DataCase do
   """
 
   use ExUnit.CaseTemplate
+  alias UrlShortner.Repo
+  alias UrlShortner.KeyGenerator
+  alias UrlShortner.EventBroker.Consumer
 
   using do
     quote do
@@ -39,8 +42,11 @@ defmodule UrlShortner.DataCase do
   Sets up the sandbox based on the test tags.
   """
   def setup_sandbox(tags) do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(UrlShortner.Repo, shared: not tags[:async])
-    Ecto.Adapters.SQL.Sandbox.allow(UrlShortner.Repo, self(), UrlShortner.EventBroker.Consumer)
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Repo, shared: not tags[:async])
+
+    Ecto.Adapters.SQL.Sandbox.allow(Repo, self(), Consumer)
+    Ecto.Adapters.SQL.Sandbox.allow(Repo, self(), KeyGenerator)
+
     on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
   end
 

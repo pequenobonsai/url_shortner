@@ -43,11 +43,6 @@ But when thinking through the problem/through implementation I also thought abou
 - Using hash of the url + random bytes for the short url
     - So there would be less chance of collisions and still support multiple short urls for the same URL instead of using just the hash
 
-- Have a KGS (key generation "service") which could keep a few (e.g. 300) valid (ensured of no collisions) short ids in memory
-    - And then we could "consume it" and periodically (e.g. 15s) regenerate it
-    - Or refill it if it went less than some threshold
-    - Downside is that it is a single point of failure
-
 - Instead of ecto's uuid we could have used [uuid v6](https://github.com/bitwalker/uniq) or [ecto ulid](https://github.com/TheRealReal/ecto-ulid), to mitigate fragmentation (since ecto uuid is v4 which are not sortable by default)
 
 And even more, if I had the time, would love to explore some
@@ -70,6 +65,9 @@ And even more, if I had the time, would love to explore some
 - Acceptance tests, browser tests, etc
 - The current implementation of the event broker is fragile, no retries, deadletters, semantics for dealing with errors, a bit confusing, could be way better
     - The consumer part of it could use some love and more thought, it was an idea that I wanted to "feel" and this miniapp was the victim haha
+- Improve the KGS (key generation "service")
+    - It's missing A LOT of coverage through test cases, but tested the behaviour manually through load testing to see if it would refill
+- Load test could use ecto sandbox instead of the default dev database
 
 ## Small ones
 

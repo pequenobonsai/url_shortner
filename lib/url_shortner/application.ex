@@ -18,7 +18,8 @@ defmodule UrlShortner.Application do
       # {UrlShortner.Worker, arg},
       # Start to serve requests, typically the last entry
       UrlShortnerWeb.Endpoint,
-      UrlShortner.EventBroker.Consumer
+      UrlShortner.EventBroker.Consumer,
+      UrlShortner.KeyGenerator
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

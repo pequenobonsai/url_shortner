@@ -131,4 +131,21 @@ defmodule UrlShortnerTest do
       assert 1 == Repo.all(UrlVisit) |> Enum.count()
     end
   end
+
+  describe "filter_non_existent/1" do
+    test "returns shorts that do not exist on the database" do
+      insert(:url, short: "short11")
+      insert(:url, short: "short22")
+
+      assert ["short33"] == UrlShortner.filter_non_existent([%{short: "short33"}])
+    end
+
+    test "filter shorts that already exist on the database" do
+      insert(:url, short: "short11")
+      insert(:url, short: "short22")
+
+      assert ["short33"] ==
+               UrlShortner.filter_non_existent([%{short: "short22"}, %{short: "short33"}])
+    end
+  end
 end
