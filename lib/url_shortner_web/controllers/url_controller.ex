@@ -28,6 +28,7 @@ defmodule UrlShortnerWeb.UrlController do
     url = UrlShortner.get_url_by(short: short)
 
     if url do
+      UrlShortner.create_url_visit_for(url)
       redirect(conn, external: url.original_raw)
     else
       conn

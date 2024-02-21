@@ -1,6 +1,7 @@
 defmodule UrlShortnerWeb.UrlControllerTest do
   use UrlShortnerWeb.ConnCase, async: true
   import Mox
+  alias UrlShortner.UrlVisit
 
   setup :verify_on_exit!
 
@@ -58,6 +59,27 @@ defmodule UrlShortnerWeb.UrlControllerTest do
 
     test "routes to shorten new url url if it does not exists", %{conn: conn} do
       assert conn |> get(~p"/someshort") |> redirected_to(302) == ~p"/urls/new"
+    end
+
+    test "tracks visit if url exists", %{conn: conn} do
+      url = %{id: url_id} = insert(:url)
+      get(conn, ~p"/#{url.short}")
+      assert [%UrlVisit{url_id: ^url_id}] = UrlShortner.Repo.all(UrlShortner.UrlVisit)
+    end
+
+    test "tracks many visits if url is visited many times", %{conn: conn} do
+      url = %{id: url_id} = insert(:url)
+
+      get(conn, ~p"/#{url.short}")
+      get(conn, ~p"/#{url.short}")
+
+      assert [%{url_id: ^url_id}, %{url_id: ^url_id}] =
+               UrlShortner.Repo.all(UrlShortner.UrlVisit)
+    end
+
+    test "does not track visit if url does not exist", %{conn: conn} do
+      conn |> get(~p"/someshort")
+      assert [] == UrlShortner.Repo.all(UrlShortner.UrlVisit)
     end
   end
 end
