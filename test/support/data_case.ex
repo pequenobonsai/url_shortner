@@ -30,6 +30,7 @@ defmodule UrlShortner.DataCase do
 
   setup tags do
     UrlShortner.DataCase.setup_sandbox(tags)
+    Mox.stub_with(KeyGeneratorMock, UrlShortner.KeyGenerator)
     :ok
   end
 
