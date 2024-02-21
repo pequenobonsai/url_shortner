@@ -63,6 +63,9 @@ config :phoenix, :json_library, Jason
 
 config :url_shortner, :key_generator, UrlShortner.KeyGenerator
 
+config :url_shortner, :event_broker_topic, "event_broker_events"
+config :url_shortner, :event_broker_publisher, UrlShortner.EventBroker.Publisher
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

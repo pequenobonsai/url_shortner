@@ -31,6 +31,7 @@ defmodule UrlShortner.DataCase do
   setup tags do
     UrlShortner.DataCase.setup_sandbox(tags)
     Mox.stub_with(KeyGeneratorMock, UrlShortner.KeyGenerator)
+    Mox.stub_with(PublisherMock, UrlShortner.EventBroker.Publisher)
     :ok
   end
 
@@ -39,6 +40,7 @@ defmodule UrlShortner.DataCase do
   """
   def setup_sandbox(tags) do
     pid = Ecto.Adapters.SQL.Sandbox.start_owner!(UrlShortner.Repo, shared: not tags[:async])
+    Ecto.Adapters.SQL.Sandbox.allow(UrlShortner.Repo, self(), UrlShortner.EventBroker.Consumer)
     on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
   end
 

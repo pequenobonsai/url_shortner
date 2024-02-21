@@ -17,7 +17,8 @@ defmodule UrlShortner.Application do
       # Start a worker by calling: UrlShortner.Worker.start_link(arg)
       # {UrlShortner.Worker, arg},
       # Start to serve requests, typically the last entry
-      UrlShortnerWeb.Endpoint
+      UrlShortnerWeb.Endpoint,
+      UrlShortner.EventBroker.Consumer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -35,6 +35,7 @@ defmodule UrlShortnerWeb.ConnCase do
   setup tags do
     UrlShortner.DataCase.setup_sandbox(tags)
     Mox.stub_with(KeyGeneratorMock, UrlShortner.KeyGenerator)
+    Mox.stub_with(PublisherMock, UrlShortner.EventBroker.Publisher)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end
