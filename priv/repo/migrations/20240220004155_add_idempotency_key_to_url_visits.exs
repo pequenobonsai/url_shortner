@@ -2,6 +2,8 @@ defmodule UrlShortner.Repo.Migrations.AddIdempotencyKeyToUrlVisits do
   use Ecto.Migration
 
   def change do
+    execute("CREATE EXTENSION pgcrypto")
+
     alter table(:url_visits) do
       add :idempotency_key, :string
     end
