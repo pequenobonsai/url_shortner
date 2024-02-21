@@ -2,6 +2,8 @@ defmodule UrlShortnerTest do
   use UrlShortner.DataCase, async: true
   import Mox
   alias UrlShortner.Url
+  alias UrlShortner.UrlVisit
+  alias UrlShortner.Repo
 
   setup :verify_on_exit!
 
@@ -113,6 +115,20 @@ defmodule UrlShortnerTest do
                %Url{id: ^url2_id, visits: 5},
                %Url{id: ^url3_id, visits: 0}
              ] = UrlShortner.urls_with_visit()
+    end
+  end
+
+  describe "create_url_visit_for/2" do
+    test "does not create a new url visit for the same idempotency key" do
+      url_visit = insert(:url_visit)
+      UrlShortner.create_url_visit_for(url_visit.url, url_visit.idempotency_key)
+      assert 1 == Repo.all(UrlVisit) |> Enum.count()
+    end
+
+    test "creates a new one if with same idempotency key does not exist for url" do
+      url = insert(:url)
+      UrlShortner.create_url_visit_for(url, Faker.UUID.v4())
+      assert 1 == Repo.all(UrlVisit) |> Enum.count()
     end
   end
 end

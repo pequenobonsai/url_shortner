@@ -1,5 +1,5 @@
 defmodule UrlShortner.EventBroker.Events.Visit do
-  defstruct [:url]
+  defstruct [:url, :idempotency_key]
 
   alias UrlShortner.EventBroker.Event
   alias UrlShortner.Url
@@ -7,12 +7,13 @@ defmodule UrlShortner.EventBroker.Events.Visit do
   @behaviour Event
 
   @type t :: %{
-          url: Url.t()
+          url: Url.t(),
+          idempotency_key: String.t()
         }
 
   @impl Event
-  def handle(%__MODULE__{url: url}) do
-    UrlShortner.create_url_visit_for(url)
+  def handle(%__MODULE__{url: url, idempotency_key: idempotency_key}) do
+    UrlShortner.create_url_visit_for(url, idempotency_key)
     :ok
   end
 end

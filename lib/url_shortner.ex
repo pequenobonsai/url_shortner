@@ -22,11 +22,21 @@ defmodule UrlShortner do
     Url.changeset(url, attrs)
   end
 
-  @spec create_url_visit_for(Url.t()) :: {:ok, UrlVisit.t()} | {:error, Ecto.Changeset.t()}
-  def create_url_visit_for(url) do
-    %UrlVisit{}
-    |> UrlVisit.changeset(%{url_id: url.id, info: %{}})
-    |> Repo.insert()
+  @spec create_url_visit_for(Url.t(), String.t()) ::
+          {:ok, UrlVisit.t()} | {:error, Ecto.Changeset.t()}
+  def create_url_visit_for(url, idempotency_key) do
+    url_visit =
+      UrlVisit
+      |> where([u], u.url_id == ^url.id and u.idempotency_key == ^idempotency_key)
+      |> Repo.one()
+
+    if url_visit do
+      url_visit
+    else
+      %UrlVisit{}
+      |> UrlVisit.changeset(%{url_id: url.id, idempotency_key: idempotency_key, info: %{}})
+      |> Repo.insert()
+    end
   end
 
   @spec urls_with_visit :: [Url.t()]

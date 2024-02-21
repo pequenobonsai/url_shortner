@@ -7,7 +7,7 @@ defmodule UrlShortner.EventBroker.Events.VisitTest do
   test "saves url visit for url" do
     url = %{id: url_id} = insert(:url)
 
-    assert :ok = Visit.handle(%Visit{url: url})
+    assert :ok = Visit.handle(%Visit{url: url, idempotency_key: Faker.UUID.v4()})
     assert [%UrlVisit{url_id: ^url_id}] = Repo.all(UrlVisit)
   end
 end

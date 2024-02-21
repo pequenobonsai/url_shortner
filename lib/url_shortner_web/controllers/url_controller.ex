@@ -30,7 +30,7 @@ defmodule UrlShortnerWeb.UrlController do
     url = UrlShortner.get_url_by(short: short)
 
     if url do
-      EventBroker.publish(%Visit{url: url})
+      EventBroker.publish(%Visit{url: url, idempotency_key: Ecto.UUID.generate()})
       redirect(conn, external: url.original_raw)
     else
       conn

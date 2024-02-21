@@ -12,6 +12,7 @@ defmodule UrlShortner.UrlVisit do
   schema "url_visits" do
     # TODO: could hold info like user agent, remote ip, headers, cookies, etc
     field :info, :map
+    field :idempotency_key, :string
 
     belongs_to :url, UrlShortner.Url
 
@@ -21,8 +22,8 @@ defmodule UrlShortner.UrlVisit do
   @doc false
   def changeset(url_visit, attrs) do
     url_visit
-    |> cast(attrs, [:info, :url_id])
-    |> validate_required([:info])
+    |> cast(attrs, [:info, :url_id, :idempotency_key])
+    |> validate_required([:info, :idempotency_key])
     |> assoc_constraint(:url)
   end
 end

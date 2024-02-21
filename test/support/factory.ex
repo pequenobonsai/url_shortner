@@ -15,6 +15,7 @@ defmodule UrlShortner.Factory do
   def url_visit_factory do
     %UrlShortner.UrlVisit{
       url: build(:url),
+      idempotency_key: Faker.UUID.v4(),
       info: %{}
     }
   end
