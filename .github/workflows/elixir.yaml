@@ -100,10 +100,3 @@ jobs:
     # Step: Execute the tests.
     - name: Run tests
       run: mix test
-
-    # Step: Deploy
-    - name: Deploy
-      uses: superfly/flyctl-actions/setup-flyctl@master
-      run: flyctl deploy --remote-only
-      env:
-        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
