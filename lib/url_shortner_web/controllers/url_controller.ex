@@ -1,6 +1,8 @@
 defmodule UrlShortnerWeb.UrlController do
   use UrlShortnerWeb, :controller
   alias UrlShortner.Url
+  alias UrlShortner.EventBroker
+  alias UrlShortner.EventBroker.Events.Visit
 
   def new(conn, _params) do
     changeset = UrlShortner.change_url(%Url{})
@@ -28,7 +30,7 @@ defmodule UrlShortnerWeb.UrlController do
     url = UrlShortner.get_url_by(short: short)
 
     if url do
-      UrlShortner.create_url_visit_for(url)
+      EventBroker.publish(%Visit{url: url})
       redirect(conn, external: url.original_raw)
     else
       conn

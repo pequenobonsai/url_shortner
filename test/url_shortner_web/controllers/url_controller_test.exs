@@ -1,7 +1,6 @@
 defmodule UrlShortnerWeb.UrlControllerTest do
   use UrlShortnerWeb.ConnCase, async: true
   import Mox
-  alias UrlShortner.UrlVisit
 
   setup :verify_on_exit!
 
@@ -52,34 +51,26 @@ defmodule UrlShortnerWeb.UrlControllerTest do
   end
 
   describe "route url" do
-    test "routes to the original url if exists", %{conn: conn} do
+    test "routes and tracks to the original url if exists", %{conn: conn} do
       url = insert(:url)
+      expect(PublisherMock, :publish, 1, fn event -> assert event.url == url end)
       assert conn |> get(~p"/#{url.short}") |> redirected_to(302) == url.original_raw
+    end
+
+    test "tracks many visits if url is visited many times", %{conn: conn} do
+      url = insert(:url)
+      expect(PublisherMock, :publish, 2, fn event -> assert event.url == url end)
+      get(conn, ~p"/#{url.short}")
+      get(conn, ~p"/#{url.short}")
     end
 
     test "routes to shorten new url url if it does not exists", %{conn: conn} do
       assert conn |> get(~p"/someshort") |> redirected_to(302) == ~p"/urls/new"
     end
 
-    test "tracks visit if url exists", %{conn: conn} do
-      url = %{id: url_id} = insert(:url)
-      get(conn, ~p"/#{url.short}")
-      assert [%UrlVisit{url_id: ^url_id}] = UrlShortner.Repo.all(UrlShortner.UrlVisit)
-    end
-
-    test "tracks many visits if url is visited many times", %{conn: conn} do
-      url = %{id: url_id} = insert(:url)
-
-      get(conn, ~p"/#{url.short}")
-      get(conn, ~p"/#{url.short}")
-
-      assert [%{url_id: ^url_id}, %{url_id: ^url_id}] =
-               UrlShortner.Repo.all(UrlShortner.UrlVisit)
-    end
-
     test "does not track visit if url does not exist", %{conn: conn} do
+      expect(PublisherMock, :publish, 0, fn _ -> :ok end)
       conn |> get(~p"/someshort")
-      assert [] == UrlShortner.Repo.all(UrlShortner.UrlVisit)
     end
   end
 end

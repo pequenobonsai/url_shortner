@@ -12,7 +12,7 @@ defmodule UrlShortner.EventBroker.Event do
 
   alias UrlShortner.EventBroker.Events
 
-  @type kind :: %{}
+  @type kind :: Events.Visit.t()
 
   @callback handle(kind()) :: :ok
 end
