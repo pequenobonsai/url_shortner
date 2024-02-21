@@ -3,8 +3,12 @@
 </.header>
 
 <.list>
-  <:item title="Destination URL"><%= @url.original_raw %></:item>
-  <:item title="Short"><%= url(@conn, ~p"/#{@url.short}") %></:item>
+  <:item title="Destination URL">
+    <.external href={@url.original_raw} />
+  </:item>
+  <:item title="Short">
+    <.external href={url(@conn, ~p"/#{@url.short}")} />
+  </:item>
 </.list>
 
 <.back navigate={~p"/urls/new"}>Back to shorten a new URL</.back>
