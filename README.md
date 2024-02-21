@@ -1,18 +1,15 @@
 # UrlShortner
+## Setup
 
-To start your Phoenix server:
+1. You can use some tool like [`asdf`](https://asdf-vm.com) or [`mise`](https://github.com/jdx/mise) to install elixir and erlang.
+2. Run `mix setup` to install dependencies, setup the development database and run igrations
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+## Starting the server
 
+Run `mix phx.server` or inside IEx with `iex -S mix phx.server`
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## Running tests
 
-## Learn more
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+To run tests use `mix test`
